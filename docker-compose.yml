@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    environment:
+      - discovery.type=single-node
+      - cluster.name=contextElasticSearch
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+  
+  unomi:
+    image: apache/unomi:2.0.0
+    depends_on:
+      - elasticsearch
+    ports:
+      - "8181:8181"
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch
+    volumes:
+      - ./unomi-config:/opt/apache-unomi/etc
+  
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=mautic
+      - MYSQL_DATABASE=mautic
+    volumes:
+      - mysql-data:/var/lib/mysql
+  
+  mautic:
+    image: mautic/mautic:v4-apache
+    depends_on:
+      - mysql
+    ports:
+      - "8080:80"
+    environment:
+      - MAUTIC_DB_HOST=mysql
+      - MAUTIC_DB_USER=root
+      - MAUTIC_DB_PASSWORD=mautic
+      - MAUTIC_DB_NAME=mautic
+    volumes:
+      - ./mautic-config:/var/www/html/app/config
+
+volumes:
+  es-data:
+  mysql-data:
