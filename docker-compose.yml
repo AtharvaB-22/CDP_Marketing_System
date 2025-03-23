@@ -2,26 +2,33 @@ version: '3'
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.21
     environment:
       - discovery.type=single-node
       - cluster.name=contextElasticSearch
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - "9200:9200"
     volumes:
       - es-data:/usr/share/elasticsearch/data
-  
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
   unomi:
-    image: apache/unomi:2.0.0
+    image: apache/unomi:2.3.0
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "8181:8181"
     environment:
-      - ELASTICSEARCH_HOST=elasticsearch
+      - UNOMI_ELASTICSEARCH_ADDRESSES=elasticsearch:9200
     volumes:
       - ./unomi-config:/opt/apache-unomi/etc
-  
+
   mysql:
     image: mysql:5.7
     environment:
@@ -29,11 +36,18 @@ services:
       - MYSQL_DATABASE=mautic
     volumes:
       - mysql-data:/var/lib/mysql
-  
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -pmautic"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
   mautic:
     image: mautic/mautic:v4-apache
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     ports:
       - "8080:80"
     environment:
@@ -43,6 +57,19 @@ services:
       - MAUTIC_DB_NAME=mautic
     volumes:
       - ./mautic-config:/var/www/html/app/config
+    restart: unless-stopped
+
+  middleware:
+    build: ./middleware
+    ports:
+      - "3000:3000"
+    depends_on:
+      - unomi
+      - mautic
+    environment:
+      - UNOMI_URL=http://unomi:8181
+      - MAUTIC_URL=http://mautic:80
+    restart: unless-stopped
 
 volumes:
   es-data:
