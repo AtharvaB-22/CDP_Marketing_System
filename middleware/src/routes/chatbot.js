@@ -1,3 +1,14 @@
+const express = require('express');
+const router = express.Router();
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Initialize Google Gemini
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
 /**
  * @swagger
  * /api/chatbot:
@@ -26,23 +37,25 @@
  *               properties:
  *                 response:
  *                   type: string
- *                   example: You said: Hello
+ *                   example: Hello! How can I assist you today?
  */
-
-const express = require('express');
-const router = express.Router();
-
-// Mock chatbot response
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { message } = req.body;
   if (!message) {
     return res.status(400).json({ message: 'Message is required' });
   }
 
-  // Mock response
-  res.status(200).json({
-    response: `You said: ${message}`,
-  });
+  try {
+    // Generate response using Google Gemini
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    const text = response.text();
+
+    res.status(200).json({ response: text });
+  } catch (error) {
+    console.error('Error generating chatbot response:', error);
+    res.status(500).json({ error: 'Failed to generate chatbot response' });
+  }
 });
 
 module.exports = router;
