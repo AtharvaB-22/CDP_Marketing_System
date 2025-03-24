@@ -48,8 +48,9 @@ router.post('/', async (req, res) => {
   try {
     // Generate response using Google Gemini
     const result = await model.generateContent(message);
-    const response = await result.response;
-    const text = response.text();
+    
+    // Ensure the response text is extracted correctly
+    const text = await result.response.text(); // Make sure to handle this as a promise
 
     res.status(200).json({ response: text });
   } catch (error) {

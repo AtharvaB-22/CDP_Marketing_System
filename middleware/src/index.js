@@ -11,10 +11,17 @@ const logger = require('./logger');
 const rateLimit = require('express-rate-limit');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const app = express(); // Initialize the app first
+const app = express();
+
 
 // Load environment variables
 dotenv.config();
+
+// Enable CORS for all origins (you can specify origins if necessary)
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.json());
+
 
 // Rate limiting configuration
 const limiter = rateLimit({
@@ -28,11 +35,8 @@ const limiter = rateLimit({
     });
   },
 });
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
 app.use(limiter); // Apply rate limiting to all requests
+
 
 // Log all incoming requests
 app.use((req, res, next) => {
@@ -97,12 +101,33 @@ app.get('/api/unomi/context', (req, res) => {
 });
 
 // Mock Mautic API
-app.post('/api/mautic/contacts', (req, res) => {
-  res.status(201).json({
-    status: 'OK',
-    message: 'Mock Mautic response',
-  });
+// app.post('/api/mautic/contacts', (req, res) => {
+//   res.status(201).json({
+//     status: 'OK',
+//     message: 'Mock Mautic response',
+//   });
+// });
+
+app.post('/api/mautic/contacts', async (req, res) => {
+  try {
+    const contactData = req.body;
+    const response = await axios.post(
+      `${process.env.MAUTIC_URL}/api/contacts/new`,
+      contactData,
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.MAUTIC_API_KEY}`, // Add your Mautic API Key
+        }
+      }
+    );
+    res.status(201).json(response.data);
+  } catch (error) {
+    logger.error('Error creating contact in Mautic', error);
+    res.status(500).json({ message: 'Error creating contact in Mautic' });
+  }
 });
+
+
 
 const swaggerOptions = {
   definition: {
