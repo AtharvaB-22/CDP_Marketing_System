@@ -1,25 +1,14 @@
+// src/App.js
 import React from 'react';
-import Chatbot from './components/Chatbot';
+import DashboardPage from './pages/DashboardPage';
+import './App.css';
 
 function App() {
   return (
-    <div style={styles.app}>
-      <h1 style={styles.header}>Customer 360 Dashboard</h1>
-      <Chatbot />
+    <div className="App">
+      <DashboardPage />
     </div>
   );
 }
-
-const styles = {
-  app: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-  },
-  header: {
-    marginBottom: '20px',
-  },
-};
 
 export default App;

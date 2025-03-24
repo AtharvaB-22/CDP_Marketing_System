@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Container, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
 
 const MarketingPage = () => {
-  const [workflows, setWorkflows] = useState([]);
+  const [workflows] = useState([]);
 
   const addWorkflow = () => {
     // Logic to add a new workflow

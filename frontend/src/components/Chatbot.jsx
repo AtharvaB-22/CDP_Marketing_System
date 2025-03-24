@@ -1,6 +1,6 @@
 // src/components/Chatbot.jsx
 import React, { useState } from 'react';
-import { Box, TextField, Button, List, ListItem, ListItemText, IconButton,Typography } from '@mui/material';
+import { Box, TextField, List, ListItem, IconButton,Typography } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat'; // Import chat icon
 import CloseIcon from '@mui/icons-material/Close'; // Import close icon
 
