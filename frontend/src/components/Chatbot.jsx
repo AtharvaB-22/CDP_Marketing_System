@@ -1,6 +1,5 @@
-// src/components/Chatbot.jsx
 import React, { useState } from 'react';
-import { Box, TextField, List, ListItem, IconButton,Typography } from '@mui/material';
+import { Box, TextField, List, ListItem, IconButton, Typography } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat'; // Import chat icon
 import CloseIcon from '@mui/icons-material/Close'; // Import close icon
 
@@ -22,10 +21,19 @@ const Chatbot = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: input }),
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch chatbot response');
+        }
+
         const data = await response.json();
         setMessages((prev) => [...prev, { text: data.response, sender: 'bot' }]);
       } catch (error) {
-        setMessages((prev) => [...prev, { text: 'Sorry, something went wrong.', sender: 'bot' }]);
+        setMessages((prev) => [
+          ...prev,
+          { text: 'Sorry, something went wrong. Please try again later.', sender: 'bot' },
+        ]);
+        console.error('Error:', error);
       }
     }
   };
@@ -99,7 +107,6 @@ const Chatbot = () => {
         >
           <ChatIcon />
         </IconButton>
-        
       )}
     </Box>
   );
