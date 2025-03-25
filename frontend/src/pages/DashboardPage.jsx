@@ -91,29 +91,45 @@
 //                       <ResizableBox 
 //                         width={400} 
 //                         height={250} 
-//                         axis="x" 
+//                         axis="both" 
 //                         minConstraints={[320, 200]} 
 //                         maxConstraints={[700, 350]} 
+//                         resizeHandles={['se']} // Bottom-right corner handle for resizing
 //                       >
-//                         <Card {...provided.dragHandleProps} sx={{
-//                           backgroundColor: '#ffffff', boxShadow: 8, borderRadius: 4, padding: '15px',
-//                           transition: 'transform 0.3s', '&:hover': { transform: 'scale(1.05)' }
+//                         <Card sx={{
+//                           backgroundColor: '#ffffff', 
+//                           boxShadow: 12, 
+//                           borderRadius: '12px', 
+//                           padding: '20px',
+//                           transition: 'transform 0.3s', 
+//                           '&:hover': { transform: 'scale(1.05)' },
+//                           border: '1px solid #dfe6e9'
 //                         }}>
+
+//                           {/* Drag Handle on top of the card */}
+//                           <Box sx={{ position: 'absolute', top: 5, left: 5, zIndex: 1 }}>
+//                             <IconButton {...provided.dragHandleProps} sx={{ color: '#2ecc71' }}>
+//                               <EditIcon />
+//                             </IconButton>
+//                           </Box>
+
 //                           <CardContent>
 //                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-//                               <Typography variant="h6" gutterBottom sx={{ color: '#2980B9' }}>
+//                               <Typography variant="h6" gutterBottom sx={{ color: '#2ecc71', fontWeight: 'bold' }}>
 //                                 {widget.title}
 //                               </Typography>
 //                               <Box>
 //                                 <IconButton onClick={() => startEditing(widget)}>
-//                                   <EditIcon sx={{ color: '#2980B9' }} />
+//                                   <EditIcon sx={{ color: '#2ecc71' }} />
 //                                 </IconButton>
 //                                 <IconButton onClick={() => removeWidget(widget.id)}>
 //                                   <CloseIcon sx={{ color: '#e74c3c' }} />
 //                                 </IconButton>
 //                               </Box>
 //                             </Box>
-//                             <Typography sx={{ color: '#7f8c8d', marginBottom: '10px' }}>{widget.content}</Typography>
+//                             <Typography sx={{ color: '#7f8c8d', marginBottom: '20px', fontStyle: 'italic' }}>
+//                               {widget.content}
+//                             </Typography>
 //                             <Button
 //                               variant="contained"
 //                               sx={{ backgroundColor: '#1abc9c', color: '#fff', '&:hover': { backgroundColor: '#16a085' } }}
@@ -136,10 +152,10 @@
 
 //       {/* Add Widget Button */}
 //       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
-//         <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff', boxShadow: 8, borderRadius: 4 }}>
+//         <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff', boxShadow: 12, borderRadius: 4 }}>
 //           <Button
 //             variant="contained"
-//             sx={{ backgroundColor: '#F39C12', color: '#fff', '&:hover': { backgroundColor: '#e67e22' }, margin: '15px' }}
+//             sx={{ backgroundColor: '#1abc9c', color: '#fff', '&:hover': { backgroundColor: '#16a085' }, margin: '15px', padding: '12px 24px' }}
 //             onClick={addWidget}
 //           >
 //             Add Widget
@@ -270,11 +286,12 @@ const DashboardPage = () => {
                       <ResizableBox 
                         width={400} 
                         height={250} 
-                        axis="x" 
+                        axis="both" 
                         minConstraints={[320, 200]} 
                         maxConstraints={[700, 350]} 
+                        resizeHandles={['se']} // Bottom-right corner handle for resizing
                       >
-                        <Card {...provided.dragHandleProps} sx={{
+                        <Card sx={{
                           backgroundColor: '#ffffff', 
                           boxShadow: 12, 
                           borderRadius: '12px', 
@@ -283,8 +300,10 @@ const DashboardPage = () => {
                           '&:hover': { transform: 'scale(1.05)' },
                           border: '1px solid #dfe6e9'
                         }}>
-                          <CardContent>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                          <CardContent {...provided.dragHandleProps}> {/* Drag handle is now the whole header area */}
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'move' }}>
+
                               <Typography variant="h6" gutterBottom sx={{ color: '#2ecc71', fontWeight: 'bold' }}>
                                 {widget.title}
                               </Typography>
@@ -325,7 +344,7 @@ const DashboardPage = () => {
         <Card sx={{ display: 'flex', justifyContent: 'center', backgroundColor: '#ffffff', boxShadow: 12, borderRadius: 4 }}>
           <Button
             variant="contained"
-            sx={{ backgroundColor: '#F39C12', color: '#fff', '&:hover': { backgroundColor: '#e67e22' }, margin: '15px', padding: '12px 24px' }}
+            sx={{ backgroundColor: '#1abc9c', color: '#fff', '&:hover': { backgroundColor: '#16a085' }, margin: '15px', padding: '12px 24px' }}
             onClick={addWidget}
           >
             Add Widget
@@ -363,7 +382,6 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
-
 
 
 // npm install react-beautiful-dnd react-resizable @mui/material @mui/icons-material react-router-dom
