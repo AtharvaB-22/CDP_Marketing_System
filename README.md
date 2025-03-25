@@ -12,7 +12,6 @@ Docker Setup
 The project uses Docker Compose to set up the necessary services, including:
 •	Elasticsearch
 •	Apache Unomi
-•	MySQL
 •	Mautic
 •	Middleware (Backend in Node.js)
 The docker-compose.yml file is included in the root of the project. This file defines and configures all the services needed for the project.
@@ -55,7 +54,8 @@ Screenshots
  
  
  
- 
+ ![Screenshot 2025-03-19 145149](https://github.com/user-attachments/assets/be3eeb45-b125-46ed-b22b-ee9fba5c5cc8)
+
 
  
  
