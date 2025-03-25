@@ -1,10 +1,12 @@
-// src/pages/DashboardPage.jsx
+
 import React, { useState } from 'react';
 import { Box, Typography, Card, CardContent, IconButton, Button, Select, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';  // Keep useNavigate here
+import { ResizableBox } from 'react-resizable';  // Import for resizing
+import 'react-resizable/css/styles.css'; // Import styles for resizing
 import Chatbot from '../components/Chatbot';
 
 const DashboardPage = () => {
@@ -15,8 +17,8 @@ const DashboardPage = () => {
   ]);
   const [editingWidget, setEditingWidget] = useState(null);
   const [selectedWidgetType, setSelectedWidgetType] = useState('');
-  const [user] = useState({ firstName: 'Atharva' }); // Simulate a logged-in user
-  const navigate = useNavigate();
+  const [user] = useState({ firstName: 'Atharva' });
+  const navigate = useNavigate();  // Ensure useNavigate is used properly
 
   const widgetOptions = [
     { value: 'Customer Profile', label: 'Customer Profile' },
@@ -29,7 +31,7 @@ const DashboardPage = () => {
   const addWidget = () => {
     const newWidget = {
       id: widgets.length + 1,
-      title: widgetOptions[0].value, // Default to the first option
+      title: widgetOptions[0].value, 
       content: `Details for ${widgetOptions[0].value}`,
     };
     setWidgets([...widgets, newWidget]);
@@ -54,7 +56,7 @@ const DashboardPage = () => {
   };
 
   const handleViewDetails = (widget) => {
-    navigate(`/widget/${widget.id}`, { state: { widget } });
+    navigate(`/widget/${widget.id}`, { state: { widget } });  // Navigate to the details page
   };
 
   const handleDragEnd = (result) => {
@@ -86,31 +88,39 @@ const DashboardPage = () => {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                     >
-                      <Card {...provided.dragHandleProps} sx={{ backgroundColor: '#ffffff', boxShadow: 3, borderRadius: 2 }}>
-                        <CardContent>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="h6" gutterBottom sx={{ color: '#4A90E2' }}>
-                              {widget.title}
-                            </Typography>
-                            <Box>
-                              <IconButton onClick={() => startEditing(widget)}>
-                                <EditIcon sx={{ color: '#4A90E2' }} />
-                              </IconButton>
-                              <IconButton onClick={() => removeWidget(widget.id)}>
-                                <CloseIcon sx={{ color: '#d32f2f' }} />
-                              </IconButton>
+                      <ResizableBox 
+                        width={400} 
+                        height={200} 
+                        axis="x" 
+                        minConstraints={[300, 200]} 
+                        maxConstraints={[600, 300]} 
+                      >
+                        <Card {...provided.dragHandleProps} sx={{ backgroundColor: '#ffffff', boxShadow: 3, borderRadius: 2 }}>
+                          <CardContent>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <Typography variant="h6" gutterBottom sx={{ color: '#4A90E2' }}>
+                                {widget.title}
+                              </Typography>
+                              <Box>
+                                <IconButton onClick={() => startEditing(widget)}>
+                                  <EditIcon sx={{ color: '#4A90E2' }} />
+                                </IconButton>
+                                <IconButton onClick={() => removeWidget(widget.id)}>
+                                  <CloseIcon sx={{ color: '#d32f2f' }} />
+                                </IconButton>
+                              </Box>
                             </Box>
-                          </Box>
-                          <Typography sx={{ color: '#555', mb: 2 }}>{widget.content}</Typography>
-                          <Button
-                            variant="contained"
-                            sx={{ backgroundColor: '#50E3C2', color: '#fff', '&:hover': { backgroundColor: '#3FB39A' } }}
-                            onClick={() => handleViewDetails(widget)}
-                          >
-                            View Details
-                          </Button>
-                        </CardContent>
-                      </Card>
+                            <Typography sx={{ color: '#555', mb: 2 }}>{widget.content}</Typography>
+                            <Button
+                              variant="contained"
+                              sx={{ backgroundColor: '#50E3C2', color: '#fff', '&:hover': { backgroundColor: '#3FB39A' } }}
+                              onClick={() => handleViewDetails(widget)}
+                            >
+                              View Details
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      </ResizableBox>
                     </Box>
                   )}
                 </Draggable>
@@ -160,3 +170,9 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
+
+// npm install react-beautiful-dnd react-resizable @mui/material @mui/icons-material react-router-dom
+// npm install react-resizable
+// npm install react-router-dom
+// npm install react-router-dom@latest react-router@latest
