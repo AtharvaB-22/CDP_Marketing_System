@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -29,11 +30,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy  # Wait for Elasticsearch to be ready
-
     volumes:
-      esdata:
-        driver: local
-
+      - esdata:/usr/share/unomi/data
 
   mysql:
     image: mysql:5.7
@@ -78,5 +76,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  es-data:
+  esdata:
   mysql-data:
